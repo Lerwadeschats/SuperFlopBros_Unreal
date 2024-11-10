@@ -67,4 +67,10 @@ void USmashCharacterStateMachine::ChangeState(ESmashCharacterStateID NextStateID
 	if(CurrentState != nullptr) CurrentState->StateEnter(PreviousStateID);
 }
 
+void USmashCharacterStateMachine::Tick(float DeltaTime)
+{
+	if(CurrentState == nullptr) return;
+	CurrentState->StateTick(DeltaTime);
+}
+
 
