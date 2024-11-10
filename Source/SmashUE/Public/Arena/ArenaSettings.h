@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
-#include "SmashCharacter.h"
+#include "Characters/SmashCharacter.h"
 #include "ArenaSettings.generated.h"
 
 /**

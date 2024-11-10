@@ -4,7 +4,7 @@
 #include "MatchGameMode.h"
 #include "Arena/ArenaPlayerStart.h"
 #include "Kismet/GameplayStatics.h"
-#include "SmashCharacter.h"
+#include "Characters/SmashCharacter.h"
 #include "Arena/ArenaSettings.h"
 
 
