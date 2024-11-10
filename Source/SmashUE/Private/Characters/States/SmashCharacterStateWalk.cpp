@@ -3,6 +3,7 @@
 
 #include "Characters/States/SmashCharacterStateWalk.h"
 
+#include "Characters/SmashCharacter.h"
 #include "Characters/SmashCharacterStateID.h"
 
 
@@ -14,7 +15,7 @@ ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
 void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
-
+	Character->PlayAnimMontage(Anim);
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		3.f,
