@@ -4,11 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "InputMappingContext.h"
+#include "Characters//SmashCharacterInputData.h"
 #include "MatchGameMode.generated.h"
+
+
 
 
 class AArenaPlayerStart;
 class ASmashCharacter;
+
 
 /**
  * 
@@ -27,6 +32,10 @@ protected:
 
 	
 private:
+	USmashCharacterInputData* LoadInputDataFromConfig();
+
+	UInputMappingContext* LoadInputMappingContextFromConfig();
+	
 	void FindPlayerStartActorsInArena(TArray<AArenaPlayerStart*>& ResultsActors);
 
 	void SpawnCharacters(const TArray<AArenaPlayerStart*>& SpawnPoints);

@@ -3,7 +3,10 @@
 
 #include "Characters/SmashCharacter.h"
 
+#include "EnhancedPlayerInput.h"
 #include "Characters/SmashCharacterStateMachine.h"
+
+#include "EnhancedInputSubsystems.h"
 
 
 // Sets default values
@@ -37,6 +40,7 @@ void ASmashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	SetupMappingContextIntoController();
 }
 
 float ASmashCharacter::GetOrientX() const
@@ -77,6 +81,27 @@ void ASmashCharacter::UpdateAnimation(UAnimMontage* Anim)
 {
 	if(Anim == nullptr) return;
 	PlayAnimMontage(Anim);
+}
+
+void ASmashCharacter::SetupMappingContextIntoController() const
+{
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if(PlayerController == nullptr) return;
+
+	ULocalPlayer* Player = PlayerController->GetLocalPlayer();
+	if(Player == nullptr) return;
+
+	UEnhancedInputLocalPlayerSubsystem* InputSystem = Player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	if(InputSystem == nullptr) return;
+
+	InputSystem->AddMappingContext(InputMappingContext, 0);
+}
+
+
+void ASmashCharacter::Move(float Speed, float DeltaTime)
+{
+	FVector NewLocation = FVector(GetMesh()->GetRelativeLocation().X + (Speed * OrientX * DeltaTime), GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z);;
+	GetMesh()->SetRelativeLocation(NewLocation);
 }
 
 

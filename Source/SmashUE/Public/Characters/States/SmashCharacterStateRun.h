@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Characters/SmashCharacterState.h"
-#include "SmashCharacterStateWalk.generated.h"
+#include "SmashCharacterStateRun.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class SMASHUE_API USmashCharacterStateWalk : public USmashCharacterState
+class SMASHUE_API USmashCharacterStateRun : public USmashCharacterState
 {
 	GENERATED_BODY()
 
@@ -23,6 +23,6 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	float MoveSpeedMax;
+	float RunMoveSpeedMax;
 	
 };

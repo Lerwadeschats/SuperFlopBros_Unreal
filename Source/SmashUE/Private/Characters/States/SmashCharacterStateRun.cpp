@@ -1,18 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/States/SmashCharacterStateWalk.h"
-
+#include "Characters/States/SmashCharacterStateRun.h"
 #include "Characters/SmashCharacter.h"
 #include "Characters/SmashCharacterStateID.h"
 
-
-ESmashCharacterStateID USmashCharacterStateWalk::GetStateID()
+ESmashCharacterStateID USmashCharacterStateRun::GetStateID()
 {
-	return ESmashCharacterStateID::Walk;
+	return ESmashCharacterStateID::Run;
 }
 
-void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID)
+void USmashCharacterStateRun::StateEnter(ESmashCharacterStateID PreviousStateID)
 {
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(Anim);
@@ -21,11 +19,11 @@ void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID
 		-1,
 		3.f,
 		FColor::Cyan,
-		TEXT("Enter StateWalk")
+		TEXT("Enter StateRun")
 	);
 }
 
-void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
+void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 
@@ -33,19 +31,19 @@ void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 		-1,
 		3.f,
 		FColor::Red,
-		TEXT("Exit StateWalk")
+		TEXT("Exit StateRun")
 	);
 }
 
-void USmashCharacterStateWalk::StateTick(float DeltaTime)
+void USmashCharacterStateRun::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	Character->Move(MoveSpeedMax, DeltaTime);
+	Character->Move(RunMoveSpeedMax, DeltaTime);
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		0.1f,
 		FColor::Green,
-		TEXT("Tick StateWalk")
+		TEXT("Tick StateRun")
 	);
 }
 
