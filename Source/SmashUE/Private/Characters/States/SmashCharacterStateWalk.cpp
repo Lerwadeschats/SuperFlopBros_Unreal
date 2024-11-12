@@ -17,24 +17,14 @@ void USmashCharacterStateWalk::StateEnter(ESmashCharacterStateID PreviousStateID
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(Anim);
 	
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Cyan,
-		TEXT("Enter StateWalk")
-	);
+	Character->InputMoveXFastEvent.AddDynamic(this, &USmashCharacterStateWalk::OnInputMoveXFast);
 }
 
 void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Red,
-		TEXT("Exit StateWalk")
-	);
+	Character->InputMoveXFastEvent.AddDynamic(this, &USmashCharacterStateWalk::OnInputMoveXFast);
 }
 
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
@@ -57,4 +47,10 @@ void USmashCharacterStateWalk::StateTick(float DeltaTime)
 		Character->Move(MoveSpeedMax, DeltaTime);
 	}
 }
+
+void USmashCharacterStateWalk::OnInputMoveXFast(float InputMoveX)
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Run);
+}
+
 

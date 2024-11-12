@@ -8,5 +8,26 @@
 ETriggerState UInputTriggerPressedFast::UpdateState_Implementation(const UEnhancedPlayerInput* PlayerInput,
                                                                    FInputActionValue ModifiedValue, float DeltaTime)
 {
+	if(IsActuated(ModifiedValue))
+	{
+		if(!bAlreadyTriggered)
+		{
+			Timer += DeltaTime;
+			if(ModifiedValue.GetMagnitudeSq() > PressedFastThreshold * PressedFastThreshold)
+			{
+				if(Timer <= Delay)
+				{
+					bAlreadyTriggered = true;
+					return ETriggerState::Triggered;
+				}
+				
+			}
+		}
+	}
+	else
+	{
+		Timer = 0.f;
+		bAlreadyTriggered = false;
+	}
 	return ETriggerState::None;
 }
