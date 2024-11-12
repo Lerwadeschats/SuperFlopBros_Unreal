@@ -40,7 +40,7 @@ void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	Character->Move(MoveSpeedMax, DeltaTime);
+	
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		0.1f,
@@ -54,7 +54,7 @@ void USmashCharacterStateWalk::StateTick(float DeltaTime)
 	else
 	{
 		Character->SetOrientX(Character->GetInputMoveX());
-		Character->AddMovementInput(FVector::ForwardVector, Character->GetOrientX());
+		Character->Move(MoveSpeedMax, DeltaTime);
 	}
 }
 
