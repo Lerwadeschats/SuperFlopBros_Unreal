@@ -2,10 +2,8 @@
 
 
 #include "Characters/SmashCharacter.h"
-
 #include "EnhancedInputComponent.h"
 #include "Characters/SmashCharacterStateMachine.h"
-
 #include "EnhancedInputSubsystems.h"
 #include "Characters/SmashCharacterInputData.h"
 
@@ -106,8 +104,9 @@ void ASmashCharacter::SetupMappingContextIntoController() const
 
 void ASmashCharacter::Move(float Speed, float DeltaTime)
 {
-	FVector NewLocation = FVector(GetMesh()->GetRelativeLocation().X + (Speed * OrientX * DeltaTime), GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z);;
-	GetMesh()->SetRelativeLocation(NewLocation);
+	FVector NewLocation = GetActorLocation();
+	NewLocation.X += DeltaTime * Speed * OrientX;
+	SetActorLocation(NewLocation);
 }
 float ASmashCharacter::GetInputMoveX() const
 {
