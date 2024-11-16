@@ -24,19 +24,14 @@ void USmashCharacterStateIdle::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 
-	Character->InputMoveXFastEvent.AddDynamic(this, &USmashCharacterStateIdle::OnInputMoveXFast);
+	Character->InputMoveXFastEvent.RemoveDynamic(this, &USmashCharacterStateIdle::OnInputMoveXFast);
 }
 
 void USmashCharacterStateIdle::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		0.1f,
-		FColor::Green,
-		TEXT("Tick StateIdle")
-	);
+	
 
 	if(FMath::Abs(Character->GetInputMoveX()) > InputMoveXThreshold)
 	{

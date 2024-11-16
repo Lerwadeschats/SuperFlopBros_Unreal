@@ -24,19 +24,14 @@ void USmashCharacterStateWalk::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 
-	Character->InputMoveXFastEvent.AddDynamic(this, &USmashCharacterStateWalk::OnInputMoveXFast);
+	Character->InputMoveXFastEvent.RemoveDynamic(this, &USmashCharacterStateWalk::OnInputMoveXFast);
 }
 
 void USmashCharacterStateWalk::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		0.1f,
-		FColor::Green,
-		TEXT("Tick StateWalk")
-	);
+	
 	if(FMath::Abs(Character->GetInputMoveX()) < InputMoveXThreshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
@@ -44,7 +39,7 @@ void USmashCharacterStateWalk::StateTick(float DeltaTime)
 	else
 	{
 		Character->SetOrientX(Character->GetInputMoveX());
-		Character->Move(MoveSpeedMax, DeltaTime);
+		Character->Move(MoveSpeedMax);
 	}
 }
 

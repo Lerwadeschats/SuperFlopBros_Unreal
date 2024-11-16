@@ -16,35 +16,20 @@ void USmashCharacterStateRun::StateEnter(ESmashCharacterStateID PreviousStateID)
 	Super::StateEnter(PreviousStateID);
 	Character->PlayAnimMontage(Anim);
 	
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Cyan,
-		TEXT("Enter StateRun")
-	);
+	
 }
 
 void USmashCharacterStateRun::StateExit(ESmashCharacterStateID NextStateID)
 {
 	Super::StateExit(NextStateID);
 
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Red,
-		TEXT("Exit StateRun")
-	);
+	
 }
 
 void USmashCharacterStateRun::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		0.1f,
-		FColor::Green,
-		TEXT("Tick StateRun")
-	);
+	
 	if(FMath::Abs(Character->GetInputMoveX()) < InputMoveXThreshold)
 	{
 		StateMachine->ChangeState(ESmashCharacterStateID::Idle);
@@ -52,7 +37,7 @@ void USmashCharacterStateRun::StateTick(float DeltaTime)
 	else
 	{
 		Character->SetOrientX(Character->GetInputMoveX());
-		Character->Move(RunMoveSpeedMax, DeltaTime);
+		Character->Move(RunMoveSpeedMax);
 	}
 }
 

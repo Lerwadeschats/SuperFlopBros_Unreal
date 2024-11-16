@@ -62,7 +62,7 @@ public:
 
 	void UpdateAnimation(UAnimMontage* Anim);
 
-	void Move(float Speed, float DeltaTime);
+	void Move(float Speed);
 	
 
 protected:
@@ -82,6 +82,8 @@ public:
 	UPROPERTY()
 	TObjectPtr<USmashCharacterInputData> InputData;
 
+	
+
 protected:
 	void SetupMappingContextIntoController() const;
 
@@ -94,6 +96,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveXEvent, float, InputMoveX)
 	
 public:
 	float GetInputMoveX() const;
+	float GetInputFall() const;
 
 	UPROPERTY()
 	FInputMoveXEvent InputMoveXFastEvent;
@@ -101,10 +104,23 @@ protected:
 	UPROPERTY()
 	float InputMoveX = 0.f;
 
+	UPROPERTY()
+	float InputFall = 0.f;
+
 private:
 	void OnInputMoveX(const FInputActionValue& InputActionValue);
 	void OnInputMoveXFast(const FInputActionValue& InputActionValue);
+	void OnInputFallFast(const FInputActionValue& InputActionValue);
 	void BindInputMoveXAxisAndActions(UEnhancedInputComponent* EnhancedInputComponent);
+	
+#pragma endregion
+
+#pragma region Jump / Fall
+	
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputJumpXEvent, float, InputJump);
+	
+private:
+	void OnInputJump(const FInputActionValue& InputActionValue);
 	
 #pragma endregion
 };

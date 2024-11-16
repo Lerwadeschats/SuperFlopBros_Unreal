@@ -6,6 +6,8 @@
 #include "Characters/SmashCharacterStateMachine.h"
 #include "EnhancedInputSubsystems.h"
 #include "Characters/SmashCharacterInputData.h"
+#include "Characters/States/SmashCharacterStateJump.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -102,15 +104,20 @@ void ASmashCharacter::SetupMappingContextIntoController() const
 }
 
 
-void ASmashCharacter::Move(float Speed, float DeltaTime)
+void ASmashCharacter::Move(float Speed)
 {
-	FVector NewLocation = GetActorLocation();
-	NewLocation.X += DeltaTime * Speed * OrientX;
-	SetActorLocation(NewLocation);
+	this->GetCharacterMovement()->MaxWalkSpeed = Speed;	
+	AddMovementInput(GetActorForwardVector(), OrientX);
+	
 }
 float ASmashCharacter::GetInputMoveX() const
 {
 	return InputMoveX;
+}
+
+float ASmashCharacter::GetInputFall() const
+{
+	return InputFall;
 }
 
 void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* EnhancedInputComponent)
@@ -139,7 +146,7 @@ void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* Enha
 			&ASmashCharacter::OnInputMoveX
 		);
 	}
-
+	
 	if(InputData->InputActionMoveXFast)
 	{
 		EnhancedInputComponent->BindAction(
@@ -149,6 +156,40 @@ void ASmashCharacter::BindInputMoveXAxisAndActions(UEnhancedInputComponent* Enha
 			&ASmashCharacter::OnInputMoveXFast
 		);
 	}
+	
+	if(InputData->InputActionJump)
+	{
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionJump,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputJump
+		);
+	}
+
+	if(InputData->InputActionFallFast)
+	{
+		
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionFallFast,
+			ETriggerEvent::Triggered,
+			this,
+			&ASmashCharacter::OnInputFallFast
+		);
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionFallFast,
+			ETriggerEvent::Started,
+			this,
+			&ASmashCharacter::OnInputFallFast
+		);
+		EnhancedInputComponent->BindAction(
+			InputData->InputActionFallFast,
+			ETriggerEvent::Completed,
+			this,
+			&ASmashCharacter::OnInputFallFast
+		);
+	}
+	
 }
 
 void ASmashCharacter::OnInputMoveX(const FInputActionValue& InputActionValue)
@@ -162,6 +203,18 @@ void ASmashCharacter::OnInputMoveXFast(const FInputActionValue& InputActionValue
 	InputMoveXFastEvent.Broadcast(InputMoveX);
 }
 
+void ASmashCharacter::OnInputJump(const FInputActionValue& InputActionValue)
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Jump);
+	
+}
+
+void ASmashCharacter::OnInputFallFast(const FInputActionValue& InputActionValue)
+{
+	StateMachine->ChangeState(ESmashCharacterStateID::Fall);
+	InputFall = InputActionValue.Get<float>();
+	
+}
 
 
 
