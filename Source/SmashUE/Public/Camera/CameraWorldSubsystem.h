@@ -20,20 +20,22 @@ public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override { return TStatId(); };
-	void AddFollowTarget(AActor* FollowTarget);
-	void RemoveFollowTarget(AActor* FollowTarget);
+	void AddFollowTarget(UObject* FollowTarget);
+	void RemoveFollowTarget(UObject* FollowTarget);
 
 protected:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> CameraMain;
 
 	UPROPERTY()
-	TArray<AActor*> FollowTargets;
+	TArray<UObject*> FollowTargets;
 
 	void TickUpdateCameraPosition(float DeltaTime);
 
 	FVector CalculateAveragePositionBetweenTargets();
 
 	UCameraComponent* FindCameraByTag(const FName& Tag) const;
+
+	
 	
 };

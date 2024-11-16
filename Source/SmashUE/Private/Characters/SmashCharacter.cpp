@@ -211,6 +211,16 @@ void ASmashCharacter::OnInputJump(const FInputActionValue& InputActionValue)
 	
 }
 
+FVector ASmashCharacter::GetFollowPosition()
+{
+	return GetActorLocation();
+}
+
+bool ASmashCharacter::IsFollowable()
+{
+	return true;
+}
+
 void ASmashCharacter::OnInputFallFast(const FInputActionValue& InputActionValue)
 {
 	StateMachine->ChangeState(ESmashCharacterStateID::Fall);
