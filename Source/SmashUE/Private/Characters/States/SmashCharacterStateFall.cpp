@@ -21,8 +21,6 @@ void USmashCharacterStateFall::StateEnter(ESmashCharacterStateID PreviousStateID
 
 	if(FMath::Abs(Character->GetInputFall()) > 0.1f)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Input fall value: %f"), Character->GetInputFall()));
-
 		Character->GetCharacterMovement()->GravityScale = FallFastGravityScale;
 	}
 	else
