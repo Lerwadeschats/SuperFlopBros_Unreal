@@ -54,14 +54,19 @@ void UCameraWorldSubsystem::TickUpdateCameraZoom(float DeltaTime)
 	//GetRangePct() = InverseLerp()
 	
 	float ZoomY = FMath::Lerp(CameraZoomYMin, CameraZoomYMax, DistancePercentage);
-	CameraMain->SetWorldLocation(FVector(CameraMain->GetComponentLocation().X, ZoomY, CameraMain->GetComponentLocation().Z));
+	
+	FVector DampingNewPosition = FMath::Lerp(CameraMain->GetComponentLocation(), FVector(CameraMain->GetComponentLocation().X, ZoomY, CameraMain->GetComponentLocation().Z), DeltaTime *  CameraSettings->SizeDampingFactor);
+	CameraMain->SetWorldLocation(DampingNewPosition);
 }
 
 void UCameraWorldSubsystem::TickUpdateCameraPosition(float DeltaTime)
 {
+	const UCameraSettings* CameraSettings = GetDefault<UCameraSettings>();
 	FVector AveragePos = CalculateAveragePositionBetweenTargets();
 	
 	ClampPositionIntoCameraBounds(AveragePos);
+
+	FVector DampingNewPosition = FMath::Lerp(CameraMain->GetComponentLocation(), AveragePos, DeltaTime *  CameraSettings->SizeDampingFactor);
 	CameraMain->SetWorldLocation(AveragePos);
 }
 
