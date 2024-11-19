@@ -4,6 +4,7 @@
 #include "Camera/CameraWorldSubsystem.h"
 
 #include "Camera/CameraFollowTarget.h"
+#include "Camera/CameraSettings.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCameraWorldSubsystem::PostInitialize()
@@ -13,7 +14,8 @@ void UCameraWorldSubsystem::PostInitialize()
 
 void UCameraWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
-	CameraMain = FindCameraByTag(TEXT("CameraMain"));
+	const UCameraSettings* CameraSettings = GetDefault<UCameraSettings>();
+	CameraMain = FindCameraByTag(CameraSettings->CameraMainTag);
 
 	AActor* CameraBoundsActor = FindCameraBoundsActor();
 	if(CameraBoundsActor != nullptr)
@@ -44,16 +46,13 @@ void UCameraWorldSubsystem::RemoveFollowTarget(UObject* FollowTarget)
 
 void UCameraWorldSubsystem::TickUpdateCameraZoom(float DeltaTime)
 {
+	const UCameraSettings* CameraSettings = GetDefault<UCameraSettings>();
 	if(CameraMain == nullptr) return;
 	float GreatestDistanceBetweenTargets = CalculateGreatestDistanceBetweenTargets();
 
-	float DistancePercentage = FMath::Clamp(FMath::GetRangePct(CameraZoomDistanceBetweenTargetsMin, CameraZoomDistanceBetweenTargetsMax, GreatestDistanceBetweenTargets), 0, 1);
+	float DistancePercentage = FMath::Clamp(FMath::GetRangePct(CameraSettings->DistanceBetweenTargetsMin, CameraSettings->DistanceBetweenTargetsMax, GreatestDistanceBetweenTargets), 0, 1);
 	//GetRangePct() = InverseLerp()
-
-	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::White, FString::Printf(TEXT("Min = %f"), CameraZoomDistanceBetweenTargetsMin));
-	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Red, FString::Printf(TEXT("Current = %f"), GreatestDistanceBetweenTargets));
-	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::Green, FString::Printf(TEXT("Percentage = %f"), DistancePercentage));
-	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::White, FString::Printf(TEXT("Max = %f"), CameraZoomDistanceBetweenTargetsMax));
+	
 	float ZoomY = FMath::Lerp(CameraZoomYMin, CameraZoomYMax, DistancePercentage);
 	CameraMain->SetWorldLocation(FVector(CameraMain->GetComponentLocation().X, ZoomY, CameraMain->GetComponentLocation().Z));
 }
@@ -125,12 +124,14 @@ UCameraComponent* UCameraWorldSubsystem::FindCameraByTag(const FName& Tag) const
 
 AActor* UCameraWorldSubsystem::FindCameraBoundsActor()
 {
+	const UCameraSettings* CameraSettings = GetDefault<UCameraSettings>();
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "CameraBounds", FoundActors);
+	
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraSettings->CameraBoundsTag, FoundActors);
 	if(FoundActors.Num() == 0) return nullptr;
 	else
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Found")));
+		
 		return FoundActors[0];
 	}
 	
@@ -222,14 +223,15 @@ FVector UCameraWorldSubsystem::CalculateWorldPositionFromViewportPosition(const 
 
 void UCameraWorldSubsystem::InitCameraZoomParameters()
 {
+	const UCameraSettings* CameraSettings = GetDefault<UCameraSettings>();
 	TArray<AActor*> CamerasDistMin;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "CameraDistanceMin", CamerasDistMin);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraSettings->CameraDistanceMinTag, CamerasDistMin);
 	if(CamerasDistMin[0] == nullptr) return;
 	CameraZoomYMin = CamerasDistMin[0]->GetActorLocation().Y;
 	
 	
 	TArray<AActor*> CamerasDistMax;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "CameraDistanceMax", CamerasDistMax);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraSettings->CameraDistanceMaxTag, CamerasDistMax);
 	if(CamerasDistMax[0] == nullptr) return;
 	CameraZoomYMax = CamerasDistMax[0]->GetActorLocation().Y;
 	
