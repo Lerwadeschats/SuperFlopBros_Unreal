@@ -41,33 +41,31 @@ void UCameraWorldSubsystem::RemoveFollowTarget(UObject* FollowTarget)
 void UCameraWorldSubsystem::TickUpdateCameraPosition(float DeltaTime)
 {
 	FVector AveragePos = CalculateAveragePositionBetweenTargets();
+	
 	ClampPositionIntoCameraBounds(AveragePos);
 	CameraMain->SetWorldLocation(AveragePos);
 }
 
 FVector UCameraWorldSubsystem::CalculateAveragePositionBetweenTargets()
 {
-	
-	float AverageX = CameraMain->GetComponentLocation().X;
-	//float AverageY = 0;
-	float AverageZ = CameraMain->GetComponentLocation().Z;
+	float AverageX = 0;
+	float AverageZ = 0;
 	for(UObject* FollowTarget : FollowTargets)
 	{
 		ICameraFollowTarget* IFollowTarget = Cast<ICameraFollowTarget>(FollowTarget);
 		if(IFollowTarget != nullptr)
 		{
+			
 			if(IFollowTarget->IsFollowable())
 			{
+				
 				AverageX += IFollowTarget->GetFollowPosition().X;
-				//AverageY += FollowTarget->GetActorLocation().Y;
 				AverageZ += IFollowTarget->GetFollowPosition().Z;
 			}
-			
 		}
-		
 	}
+	
 	AverageX /= FollowTargets.Num();
-//	AverageY /= FollowTargets.Num();
 	AverageZ /= FollowTargets.Num();
 	return FVector(AverageX, CameraMain->GetComponentLocation().Y, AverageZ);
 }
@@ -117,11 +115,25 @@ void UCameraWorldSubsystem::ClampPositionIntoCameraBounds(FVector& Position)
 	FVector WorldBoundsMin = CalculateWorldPositionFromViewportPosition(ViewportBoundsMin);
 	FVector WorldBoundsMax = CalculateWorldPositionFromViewportPosition(ViewportBoundsMax);
 
-	if(Position.X + WorldBoundsMin.X / 2 < CameraBoundsMin.X) Position.X = CameraBoundsMin.X - WorldBoundsMin.X/2;
-	else if(Position.X + WorldBoundsMax.X / 2  > CameraBoundsMax.X) Position.X = CameraBoundsMax.X - WorldBoundsMax.X/2;
+	float HeightWorldBounds = FMath::Abs(WorldBoundsMax.Z - WorldBoundsMin.Z);
+	float WidthWorldBounds = FMath::Abs(WorldBoundsMax.X - WorldBoundsMin.X);
 
-	if(Position.Z + WorldBoundsMin.Z / 2 > CameraBoundsMax.Y) Position.Z = CameraBoundsMax.Y - WorldBoundsMin.Z / 2;
-	else if(Position.Z + WorldBoundsMax.Z / 2 < CameraBoundsMin.Y) Position.Z = CameraBoundsMin.Y - WorldBoundsMax.Z / 2;
+	float BoundsMinX = CameraBoundsMin.X + WidthWorldBounds / 2;
+	float BoundsMaxX = CameraBoundsMax.X - WidthWorldBounds / 2;
+
+	if(Position.X < BoundsMinX) Position.X = BoundsMinX;
+	else if(Position.X > BoundsMaxX) Position.X = BoundsMaxX;
+	
+	float BoundsMinZ = CameraBoundsMin.Y + HeightWorldBounds / 2;
+	float BoundsMaxZ = CameraBoundsMax.Y - HeightWorldBounds / 2;
+
+	if(Position.Z > BoundsMaxZ) Position.Z = BoundsMaxZ;
+	else if(Position.Z < BoundsMinZ) Position.Z = BoundsMinZ;
+
+	//Debug
+	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::White, FString::Printf(TEXT("Ymin = %f"), BoundsMinZ));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::White, FString::Printf(TEXT("PosX = %f"), Position.Z));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.001f, FColor::White, FString::Printf(TEXT("Ymax = %f"), BoundsMaxZ));
 }
 
 void UCameraWorldSubsystem::GetViewportBounds(FVector2D& OutViewportBoundsMin, FVector2D& OutViewportBoundsMax)
