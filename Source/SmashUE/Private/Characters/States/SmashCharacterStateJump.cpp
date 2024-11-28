@@ -38,7 +38,6 @@ void USmashCharacterStateJump::StateTick(float DeltaTime)
 	Super::StateTick(DeltaTime);
 	if(Character->GetVelocity().Z < 0)
 	{
-		
 		StateMachine->ChangeState(ESmashCharacterStateID::Fall);
 	}
 	if(FMath::Abs(Character->GetInputMoveX()) > InputMoveXThreshold)
