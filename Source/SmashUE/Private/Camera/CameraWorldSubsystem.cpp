@@ -67,7 +67,7 @@ void UCameraWorldSubsystem::TickUpdateCameraPosition(float DeltaTime)
 	ClampPositionIntoCameraBounds(AveragePos);
 
 	FVector DampingNewPosition = FMath::Lerp(CameraMain->GetComponentLocation(), AveragePos, DeltaTime *  CameraSettings->SizeDampingFactor);
-	CameraMain->SetWorldLocation(AveragePos);
+	CameraMain->SetWorldLocation(DampingNewPosition);
 }
 
 FVector UCameraWorldSubsystem::CalculateAveragePositionBetweenTargets()
